@@ -1,20 +1,22 @@
 from __future__ import annotations
 from exceptions import DATFileNotProvidedException, UnableToConvertDATFileToArray
 
-import vpython
 import numpy
 import re
 import os
 import argparse
+import simulation_model
 
 def main():
     # Load data from .dat file
+    global SIM
+
     try:
-        DATA : numpy.ndarray[numpy.ndarray] = numpy.loadtxt(FILENAME, dtype=float)
+        data : numpy.ndarray[numpy.ndarray] = numpy.loadtxt(FILENAME, dtype=float, usecols=(i for i in range(0,10)))
+        SIM = simulation_model.Simulation(data)
     except Exception as exception:
         raise UnableToConvertDATFileToArray(f'Unable to load the dat file into array.\n{exception}')
 
-    # Validate it has nine columns
 
 if __name__ == '__main__':
 
