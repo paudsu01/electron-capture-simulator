@@ -1,0 +1,2 @@
+class DATFileNotProvidedException(Exception):
+    pass
