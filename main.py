@@ -35,6 +35,11 @@ def setup_user_input():
     utils.setup_w_text_speed(speed_slider.value)
     vpython.scene.append_to_caption("\n")
 
+    # Help and Tips message
+    vpython.scene.append_to_caption('\n\n\n\tHELP/TIPS:\n\nResize canvas by placing mouse at the egde of the canvas\n\n\tTouchpad:\nZoom in/out : Place two fingers on touchpad and move up/down\nRotate "camera" to view scene : Place two fingers on touchpad and press and move \nPan camera : Shift + press touchpad and move (Simulation needs to be paused !!)')
+    vpython.scene.append_to_caption('\n\n\tMouse:\nRight button drag or Ctrl-drag to rotate "camera" to view scene.\nTo zoom, drag with middle button or Alt/Option depressed, or use scroll wheel.\nOn a two-button mouse, middle is left + right.\nShift-drag to pan left/right and up/down.\nTouch screen: pinch/extend to zoom, swipe or two-finger rotate\n')
+
+
 
 def start_simulation():
 
