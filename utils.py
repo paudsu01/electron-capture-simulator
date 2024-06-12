@@ -7,15 +7,29 @@ import random
 
 speed_wtext = None
 name_to_object_dict = {'Nucleus': config.NUCLEUS, 'Projectile': config.PROJECTILE, 'Electron': config.ELECTRON}
+latest_object_followed = config.NUCLEUS
 
 def change_camera_focus(event: vpython.vpython.menu) -> None:
-    vpython.scene.camera.follow(name_to_object_dict[event.selected])
+
+    global latest_object_followed
+    latest_object_followed = name_to_object_dict[event.selected]
+
+    vpython.scene.camera.follow(latest_object_followed)
+    vpython.rate(1)
+    if config.PAUSED:
+        vpython.scene.camera.follow(None)
 
 def run_pause_program(event : vpython.vpython.button) -> None:
 
     config.PAUSED = False if config.PAUSED else True
     event.text = 'Run' if event.text == 'Pause' else 'Pause'
     event.background = vpython.color.green if event.background == vpython.color.red else vpython.color.red
+
+    if config.PAUSED:
+        vpython.scene.camera.follow(None)
+    else:
+        vpython.scene.camera.follow(latest_object_followed)
+
 
 def change_simulation_rate(event :vpython.vpython.slider) -> None:
 
