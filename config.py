@@ -1,0 +1,2 @@
+PAUSED = False
+SIM_RATE = 30

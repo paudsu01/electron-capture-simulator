@@ -8,34 +8,34 @@ import numpy
 import vpython
 
 import simulation_model
+import config
+import utils
 from exceptions import (DATFileNotProvidedException,
                         UnableToConvertDATFileToArray)
 
 
+def setup_user_input():
+
+    vpython.button(bind=utils.run_pause_program, text='Pause', background=vpython.color.red)
+
 def start_simulation():
 
-    camera_focus_index = 0
-    vpython.scene.camera.follow(ELECTRON)
+    # Setup user input and options
+    setup_user_input()
+
+    vpython.scene.camera.follow(NUCLEUS)
+
     while SIM.time < len(SIM.data):
-        vpython.rate(10)
-        keys = vpython.keysdown()
-        if 'c' in keys:
-            camera_focus_index = (camera_focus_index + 1) % 3
-            if camera_focus_index == 1:
-                vpython.scene.camera.follow(PROJECTILE)
-            elif camera_focus_index == 2:
-                vpython.scene.camera.follow(ELECTRON)
-            else:
-                vpython.scene.camera.follow(NUCLEUS)
 
-        PROJECTILE.pos = vpython.vector(SIM.projectile.x, SIM.projectile.y, SIM.projectile.z)
-        ELECTRON.pos = vpython.vector(SIM.electron.x, SIM.electron.y, SIM.electron.z)
-        NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x, SIM.target_nucleus.y, SIM.target_nucleus.z)
+        vpython.rate(config.SIM_RATE)
+        if not config.PAUSED:
 
-        SIM.time += 1
+            PROJECTILE.pos = vpython.vector(SIM.projectile.x, SIM.projectile.y, SIM.projectile.z)
+            ELECTRON.pos = vpython.vector(SIM.electron.x, SIM.electron.y, SIM.electron.z)
+            NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x, SIM.target_nucleus.y, SIM.target_nucleus.z)
 
+            SIM.time += 1
 
-    
 if __name__ == '__main__':
 
     pattern = re.compile(r'.*\.dat')
@@ -50,10 +50,15 @@ if __name__ == '__main__':
         try:
             data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
                 FILENAME, dtype=float, usecols=(i for i in range(0, 10)))
+
+
+            ### Init ###
+
             SIM = simulation_model.Simulation(data)
             PROJECTILE = vpython.sphere(radius=2, color=vpython.color.red, make_trail=True)
             NUCLEUS = vpython.sphere(radius=2, color=vpython.color.green, make_trail = True, opacity=0.5)
             ELECTRON = vpython.sphere(radius=1, color=vpython.color.yellow, make_trail=True)
+
             start_simulation()
 
         except Exception as exception:
