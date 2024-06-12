@@ -1,10 +1,10 @@
 import vpython
 
-PAUSED = False
+PAUSED = True
 SIM_RATE = 30
 
-PROJECTILE = vpython.sphere(radius=2, color=vpython.color.red, make_trail=True)
-NUCLEUS = vpython.sphere(radius=2,
+PROJECTILE = vpython.sphere(radius=1.5, color=vpython.color.red, make_trail=True)
+NUCLEUS = vpython.sphere(radius=1.5,
                          color=vpython.color.green,
                          make_trail=True,
                          opacity=0.5)

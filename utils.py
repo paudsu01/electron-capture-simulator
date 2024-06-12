@@ -74,7 +74,7 @@ def setup_camera_pan_button() -> None:
     camera_pan_button = vpython.button(text='Enable Pan mode',
                                        bind=enable_pan_mode,
                                        background=vpython.color.cyan,
-                                       disabled=True)
+                                       disabled=not config.PAUSED)
 
 
 def screenshot(evt: vpython.vpython.button) -> None:

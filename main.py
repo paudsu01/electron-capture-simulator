@@ -20,8 +20,8 @@ def setup_user_input():
     global speed_slider
     # Run/Pause button
     pause_button = vpython.button(bind=utils.run_pause_program,
-                                  text='Pause',
-                                  background=vpython.color.red)
+                                  text='Run',
+                                  background=vpython.color.green)
     vpython.scene.append_to_caption("\t\t")
 
     # Camera focus options
@@ -52,10 +52,10 @@ def setup_user_input():
 
     # Help and Tips message
     vpython.scene.append_to_caption(
-        '\n\n\n\tHELP/TIPS:\n\nResize canvas by placing mouse at the egde of the canvas\n\n\tTouchpad:\nZoom in/out : Place two fingers on touchpad and move up/down\nRotate "camera" to view scene : Place two fingers on touchpad and press and move \nPan camera : Shift + press touchpad and move (Simulation needs to be paused !!)'
+        '\n\n\n\t<b>HELP/TIPS</b>:\n\nResize canvas by placing mouse at the egde of the canvas\n\n\t<b>Touchpad</b>:\nZoom in/out : Place two fingers on touchpad and move up/down\nRotate "camera" to view scene : Place two fingers on touchpad and press and move \nPan camera : Shift + press touchpad and move (Simulation needs to be paused !!)'
     )
     vpython.scene.append_to_caption(
-        '\n\n\tMouse:\nRight button drag or Ctrl-drag to rotate "camera" to view scene.\nTo zoom, drag with middle button or Alt/Option depressed, or use scroll wheel.\nOn a two-button mouse, middle is left + right.\nShift-drag to pan left/right and up/down.\nTouch screen: pinch/extend to zoom, swipe or two-finger rotate\n'
+        '\n\n\t<b>Mouse</b>:\nRight button drag or Ctrl-drag to rotate "camera" to view scene.\nTo zoom, drag with middle button or Alt/Option depressed, or use scroll wheel.\nOn a two-button mouse, middle is left + right.\nShift-drag to pan left/right and up/down.\nTouch screen: pinch/extend to zoom, swipe or two-finger rotate\n'
     )
 
 
@@ -69,29 +69,33 @@ def end_simulation():
         pass
 
 
+def change_coordinates() -> None:
+
+    config.PROJECTILE.pos = vpython.vector(SIM.projectile.x,
+                                           SIM.projectile.y,
+                                           SIM.projectile.z)
+    config.ELECTRON.pos = vpython.vector(SIM.electron.x,
+                                         SIM.electron.y,
+                                         SIM.electron.z)
+    config.NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x,
+                                        SIM.target_nucleus.y,
+                                        SIM.target_nucleus.z)
+
+ 
+
 def start_simulation():
 
-    # Setup user input and options
-    setup_user_input()
-
-    vpython.scene.camera.follow(config.NUCLEUS)
+    # Setup the objects in canvas in their required coordinates
+    change_coordinates()
 
     while SIM.time < len(SIM.data):
 
         vpython.rate(config.SIM_RATE)
+
         if not config.PAUSED:
 
-            config.PROJECTILE.pos = vpython.vector(SIM.projectile.x,
-                                                   SIM.projectile.y,
-                                                   SIM.projectile.z)
-            config.ELECTRON.pos = vpython.vector(SIM.electron.x,
-                                                 SIM.electron.y,
-                                                 SIM.electron.z)
-            config.NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x,
-                                                SIM.target_nucleus.y,
-                                                SIM.target_nucleus.z)
-
-            SIM.time += 1
+           change_coordinates()
+           SIM.time += 1
 
     end_simulation()
 
@@ -114,6 +118,11 @@ if __name__ == '__main__':
             ### Init ###
 
             SIM = simulation_model.Simulation(data)
+
+            # Setup user input and options
+            setup_user_input()
+            vpython.scene.camera.follow(config.NUCLEUS)
+
             start_simulation()
 
         except Exception as exception:
