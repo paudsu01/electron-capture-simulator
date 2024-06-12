@@ -23,6 +23,10 @@ def setup_user_input():
     # Camera focus options
     vpython.scene.append_to_caption("Focus camera on: ")
     vpython.menu(bind=utils.change_camera_focus, choices=['Nucleus', 'Projectile', 'Electron'], index=0)
+    vpython.scene.append_to_caption("\t\t")
+
+    # Screenshot button
+    vpython.button(text='Screenshot', bind=utils.screenshot, background=vpython.color.blue)
     vpython.scene.append_to_caption("\n")
 
     # Speed slider

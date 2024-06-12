@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import config
 import vpython
+import string
+import random
 
 speed_wtext = None
 name_to_object_dict = {'Nucleus': config.NUCLEUS, 'Projectile': config.PROJECTILE, 'Electron': config.ELECTRON}
@@ -29,3 +31,11 @@ def setup_w_text_speed(value : int, firstTime : bool = True) -> None:
     else:
         speed_wtext.text = value
 
+def screenshot(evt: vpython.vpython.button) -> None:
+    vpython.scene.capture(random_text_generator())
+
+def random_text_generator() -> str:
+
+    length = random.randint(8,15)
+    options = string.ascii_letters + ''.join([str(i) for i in range(10)])
+    return ''.join([random.choice(options) for i in range(length)])
