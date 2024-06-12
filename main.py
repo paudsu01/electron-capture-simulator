@@ -59,11 +59,37 @@ def setup_user_input():
     )
 
 
+def restart_simulation(event : vpython.vpython.button) -> None:
+
+    # Delete restart button
+    event.delete()
+
+    # Reset simulation time to 0
+    SIM.time = 0
+
+    # Enable buttons and slider
+    speed_slider.disabled = False
+    pause_button.disabled = False
+
+    # Pause the simulation at the beginning
+    config.PAUSED = False
+    utils.run_pause_program(pause_button)
+
+    # Remove trails created from previous sim run
+    config.PROJECTILE.clear_trail()
+    config.NUCLEUS.clear_trail()
+    config.ELECTRON.clear_trail()
+
+    start_simulation()
+
 def end_simulation():
 
     speed_slider.disabled = True
     utils.run_pause_program(pause_button)
     pause_button.disabled = True
+    vpython.button(bind=restart_simulation, text='Restart simulation', background=vpython.color.magenta, pos=vpython.scene.title_anchor)
+    vpython.scene.append_to_title('\n\n')
+
     while True:
         vpython.rate(10)
         pass

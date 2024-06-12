@@ -40,8 +40,8 @@ def change_camera_focus(event: vpython.vpython.menu) -> None:
 def run_pause_program(event: vpython.vpython.button) -> None:
 
     config.PAUSED = False if config.PAUSED else True
-    event.text = 'Run' if event.text == 'Pause' else 'Pause'
-    event.background = vpython.color.green if event.background == vpython.color.red else vpython.color.red
+    event.text = 'Run' if config.PAUSED else 'Pause'
+    event.background = vpython.color.green if config.PAUSED else vpython.color.red
     if config.PAUSED:
         camera_pan_button.disabled = False
         camera_pan_button.text = "Enable Pan mode"
