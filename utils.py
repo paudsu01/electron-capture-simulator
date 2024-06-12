@@ -6,8 +6,19 @@ import string
 import random
 
 speed_wtext = None
+camera_pan_button = None
+
 name_to_object_dict = {'Nucleus': config.NUCLEUS, 'Projectile': config.PROJECTILE, 'Electron': config.ELECTRON}
 latest_object_followed = config.NUCLEUS
+
+def enable_pan_mode(event: vpython.vpython.checkbox) -> None:
+
+    if event.text == "Pan mode: disabled" or event.text == 'Enable Pan mode':
+        vpython.scene.camera.follow(None)
+        camera_pan_button.text = "Pan mode: enabled"
+    else:
+        vpython.scene.camera.follow(latest_object_followed)
+        camera_pan_button.text = "Pan mode: disabled"
 
 def change_camera_focus(event: vpython.vpython.menu) -> None:
 
@@ -15,19 +26,19 @@ def change_camera_focus(event: vpython.vpython.menu) -> None:
     latest_object_followed = name_to_object_dict[event.selected]
 
     vpython.scene.camera.follow(latest_object_followed)
-    vpython.rate(1)
-    if config.PAUSED:
-        vpython.scene.camera.follow(None)
+    camera_pan_button.text = "Enable Pan mode"
 
 def run_pause_program(event : vpython.vpython.button) -> None:
 
     config.PAUSED = False if config.PAUSED else True
     event.text = 'Run' if event.text == 'Pause' else 'Pause'
     event.background = vpython.color.green if event.background == vpython.color.red else vpython.color.red
-
     if config.PAUSED:
-        vpython.scene.camera.follow(None)
+        camera_pan_button.disabled = False
+        camera_pan_button.text = "Enable Pan mode"
     else:
+        camera_pan_button.disabled = True
+        camera_pan_button.text = "Enable Pan mode"
         vpython.scene.camera.follow(latest_object_followed)
 
 
@@ -45,7 +56,14 @@ def setup_w_text_speed(value : int, firstTime : bool = True) -> None:
     else:
         speed_wtext.text = value
 
+def setup_camera_pan_button() -> None:
+
+    global camera_pan_button 
+
+    camera_pan_button = vpython.button(text='Enable Pan mode', bind=enable_pan_mode, background=vpython.color.cyan, disabled=True)
+
 def screenshot(evt: vpython.vpython.button) -> None:
+
     vpython.scene.capture(random_text_generator())
 
 def random_text_generator() -> str:

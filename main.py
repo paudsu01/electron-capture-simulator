@@ -16,13 +16,19 @@ from exceptions import (DATFileNotProvidedException,
 
 def setup_user_input():
 
+    global pause_button
+    global speed_slider
     # Run/Pause button
-    vpython.button(bind=utils.run_pause_program, text='Pause', background=vpython.color.red)
+    pause_button = vpython.button(bind=utils.run_pause_program, text='Pause', background=vpython.color.red)
     vpython.scene.append_to_caption("\t\t")
 
     # Camera focus options
     vpython.scene.append_to_caption("Focus camera on: ")
     vpython.menu(bind=utils.change_camera_focus, choices=['Nucleus', 'Projectile', 'Electron'], index=0)
+    vpython.scene.append_to_caption("\t\t")
+
+    # Pan mode enable button
+    utils.setup_camera_pan_button()
     vpython.scene.append_to_caption("\t\t")
 
     # Screenshot button
@@ -41,6 +47,17 @@ def setup_user_input():
 
 
 
+def end_simulation():
+
+    speed_slider.disabled = True
+    utils.run_pause_program(pause_button)
+    pause_button.disabled = True
+    while True:
+        vpython.rate(10)
+        pass
+
+     
+
 def start_simulation():
 
     # Setup user input and options
@@ -58,6 +75,8 @@ def start_simulation():
             config.NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x, SIM.target_nucleus.y, SIM.target_nucleus.z)
 
             SIM.time += 1
+
+    end_simulation()
 
 if __name__ == '__main__':
 
