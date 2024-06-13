@@ -8,12 +8,13 @@ import numpy
 import vpython
 
 import simulation_model
-from exceptions import (DATFileNotProvidedException,
-                        UnableToConvertDATFileToArray,
-                        CannotEnableFastGraphModeWithoutEnergyDATFile,
-                        DATFilesHaveVaryingLengths)
+from exceptions import (CannotEnableFastGraphModeWithoutEnergyDATFile,
+                        DATFileNotProvidedException,
+                        DATFilesHaveVaryingLengths,
+                        UnableToConvertDATFileToArray)
 
-def add_delete_curves(event: vpython.vpython.checkbox):
+
+def add_delete_curves(event: vpython.vpython.checkbox) -> None:
 
     if event.checked:
         plot_graph()
@@ -21,7 +22,8 @@ def add_delete_curves(event: vpython.vpython.checkbox):
         PROJECTILE_ENERGY_GRAPH.data = []
         TARGET_ENERGY_GRAPH.data = []
 
-def setup_user_input():
+
+def setup_user_input() -> None:
 
     global pause_button
     global speed_slider
@@ -53,15 +55,15 @@ def setup_user_input():
 
     # Stop button
     stop_button = vpython.button(text='Stop simulation',
-                   bind=utils.stop_simulation,
-                   background=vpython.color.red)
+                                 bind=utils.stop_simulation,
+                                 background=vpython.color.red)
     config.CANVAS.append_to_caption("\t\t")
 
     # Enable graph checkbox
     if config.GRAPH_ENABLED:
         graph_checkbox = vpython.checkbox(text='Plot graph',
-                    bind=add_delete_curves,
-                    background=vpython.color.orange)
+                                          bind=add_delete_curves,
+                                          background=vpython.color.orange)
 
     config.CANVAS.append_to_caption("\n\n")
 
@@ -83,7 +85,7 @@ def setup_user_input():
     )
 
 
-def restart_simulation(event : vpython.vpython.button) -> None:
+def restart_simulation(event: vpython.vpython.button) -> None:
 
     # Allow the start_simulation function to be executed
     config.SIMULATION_ENDED = False
@@ -117,9 +119,10 @@ def restart_simulation(event : vpython.vpython.button) -> None:
         # Remove points from graph
         PROJECTILE_ENERGY_GRAPH.data = []
         TARGET_ENERGY_GRAPH.data = []
-        graph_checkbox.disabled =  False
+        graph_checkbox.disabled = False
 
-def end_simulation():
+
+def end_simulation() -> None:
 
     speed_slider.disabled = True
     stop_button.disabled = True
@@ -129,36 +132,40 @@ def end_simulation():
     utils.run_pause_program(pause_button)
     pause_button.disabled = True
 
-    vpython.button(bind=restart_simulation, text='Restart simulation', background=vpython.color.magenta, pos=config.CANVAS.title_anchor)
+    vpython.button(bind=restart_simulation,
+                   text='Restart simulation',
+                   background=vpython.color.magenta,
+                   pos=config.CANVAS.title_anchor)
     config.CANVAS.append_to_title('\n\n')
 
-def plot_graph():
 
-    PROJECTILE_ENERGY_GRAPH.plot(SIM.actual_time, SIM.electron.energy_wrt_projectile)
+def plot_graph() -> None:
+
+    PROJECTILE_ENERGY_GRAPH.plot(SIM.actual_time,
+                                 SIM.electron.energy_wrt_projectile)
     TARGET_ENERGY_GRAPH.plot(SIM.actual_time, SIM.electron.energy_wrt_target)
+
 
 def change_coordinates_and_update_time() -> None:
 
-    config.PROJECTILE.pos = vpython.vector(SIM.projectile.x,
-                                           SIM.projectile.y,
+    config.PROJECTILE.pos = vpython.vector(SIM.projectile.x, SIM.projectile.y,
                                            SIM.projectile.z)
-    config.ELECTRON.pos = vpython.vector(SIM.electron.x,
-                                         SIM.electron.y,
+    config.ELECTRON.pos = vpython.vector(SIM.electron.x, SIM.electron.y,
                                          SIM.electron.z)
     config.NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x,
                                         SIM.target_nucleus.y,
                                         SIM.target_nucleus.z)
     time_in_fs = 0.024188843 * SIM.actual_time
     config.CANVAS.title = f'\t\tSimulation Time elapsed: <b>{time_in_fs:.4f}</b> femtoseconds(fs)'
- 
 
-def start_simulation():
+
+def start_simulation() -> None:
 
     # Setup the objects in canvas in their required coordinates
     change_coordinates_and_update_time()
 
     if config.GRAPH_ENABLED:
-        if graph_checkbox.checked : plot_graph()
+        if graph_checkbox.checked: plot_graph()
 
     while SIM.time < len(SIM.data):
 
@@ -172,12 +179,14 @@ def start_simulation():
 
         if not config.PAUSED:
 
-           config.SIMULATION_STARTED = True
+            config.SIMULATION_STARTED = True
 
-           change_coordinates_and_update_time()
-           if config.GRAPH_ENABLED and int(SIM.time) % 100 == 0 and graph_checkbox.checked : plot_graph()
+            change_coordinates_and_update_time()
+            if config.GRAPH_ENABLED and int(
+                    SIM.time) % 100 == 0 and graph_checkbox.checked:
+                plot_graph()
 
-           SIM.time += 1
+            SIM.time += 1
 
     end_simulation()
 
@@ -193,33 +202,47 @@ if __name__ == '__main__':
 
     argument_parser.add_argument('energyfileName.dat', nargs='?')
 
-    argument_parser.add_argument('-f', '--fast', help='Use fast mode for graphing instead of the default slow mode (Also needs the energyfileName.dat positional argument provided)', action='store_true')
+    argument_parser.add_argument(
+        '-f',
+        '--fast',
+        help=
+        'Use fast mode for graphing instead of the default slow mode (Also needs the energyfileName.dat positional argument provided)',
+        action='store_true')
 
     args = argument_parser.parse_args()
 
     COORDINATES_FILE_NAME = vars(args)['coordinatesfileName.dat']
     ENERGY_FILE_NAME = vars(args)['energyfileName.dat']
-    
-    if ENERGY_FILE_NAME is None and args.fast:
-        raise CannotEnableFastGraphModeWithoutEnergyDATFile("Cannot provide -f flag without providing energyfileName.dat as positional argument")
 
-    if (pattern.match(COORDINATES_FILE_NAME) and ENERGY_FILE_NAME is None) or (pattern.match(COORDINATES_FILE_NAME) and pattern.match(ENERGY_FILE_NAME)):
+    if ENERGY_FILE_NAME is None and args.fast:
+        raise CannotEnableFastGraphModeWithoutEnergyDATFile(
+            "Cannot provide -f flag without providing energyfileName.dat as positional argument"
+        )
+
+    if (pattern.match(COORDINATES_FILE_NAME) and ENERGY_FILE_NAME
+            is None) or (pattern.match(COORDINATES_FILE_NAME)
+                         and pattern.match(ENERGY_FILE_NAME)):
 
         enable_graph = False if ENERGY_FILE_NAME is None else True
-
 
         # Load data from .dat file
         try:
             coordinates_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
-                COORDINATES_FILE_NAME, dtype=float, usecols=(i for i in range(0, 10)))
+                COORDINATES_FILE_NAME,
+                dtype=float,
+                usecols=(i for i in range(0, 10)))
 
             if enable_graph:
 
                 energy_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
-                    ENERGY_FILE_NAME, dtype=float, usecols=(i for i in range(0, 2)))
+                    ENERGY_FILE_NAME,
+                    dtype=float,
+                    usecols=(i for i in range(0, 2)))
 
                 if len(coordinates_data) != len(energy_data):
-                    raise DATFilesHaveVaryingLengths(f'Both {COORDINATES_FILE_NAME} and {ENERGY_FILE_NAME} need to have the same number of lines')
+                    raise DATFilesHaveVaryingLengths(
+                        f'Both {COORDINATES_FILE_NAME} and {ENERGY_FILE_NAME} need to have the same number of lines'
+                    )
             else:
                 energy_data = numpy.array([])
 
@@ -235,8 +258,11 @@ if __name__ == '__main__':
             SIM = simulation_model.Simulation(coordinates_data, energy_data)
 
             if config.GRAPH_ENABLED:
-                PROJECTILE_ENERGY_GRAPH = vpython.gdots(color=vpython.color.red, radius=1.5, graph=config.GRAPH)
-                TARGET_ENERGY_GRAPH = vpython.gdots(color=vpython.color.blue, radius=1.5, graph=config.GRAPH)
+                PROJECTILE_ENERGY_GRAPH = vpython.gdots(
+                    color=vpython.color.red, radius=1.5, graph=config.GRAPH)
+                TARGET_ENERGY_GRAPH = vpython.gdots(color=vpython.color.blue,
+                                                    radius=1.5,
+                                                    graph=config.GRAPH)
 
             # Setup user input and options
             setup_user_input()

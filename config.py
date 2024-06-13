@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import vpython
 
 PAUSED = True
@@ -6,7 +8,8 @@ SIMULATION_ENDED = False
 SIMULATION_STARTED = False
 GRAPH_ENABLED = True
 
-def setup_graph_and_canvas(fastGraph, enable_graph):
+
+def setup_graph_and_canvas(fastGraph: bool, enable_graph: bool) -> None:
 
     global GRAPH
     global CANVAS
@@ -15,16 +18,24 @@ def setup_graph_and_canvas(fastGraph, enable_graph):
     global ELECTRON
 
     if enable_graph:
-        GRAPH = vpython.graph(title='Electron Energy graph', xtitle='Time', ytitle='Energy', align='right', width=500, fast=fastGraph)
+        GRAPH = vpython.graph(title='Electron Energy graph',
+                              xtitle='Time',
+                              ytitle='Energy',
+                              align='right',
+                              width=500,
+                              fast=fastGraph)
 
         # Create a gvbars object to align GRAPH on top right
         bar = vpython.gvbars()
         bar.plot(0, 0)
-    
+
     CANVAS = vpython.canvas(visible=True)
     CANVAS.select()
-    
-    PROJECTILE = vpython.sphere(radius=0.5, color=vpython.color.red, make_trail=True, opacity=0.5)
+
+    PROJECTILE = vpython.sphere(radius=0.5,
+                                color=vpython.color.red,
+                                make_trail=True,
+                                opacity=0.5)
     NUCLEUS = vpython.sphere(radius=0.5,
                              color=vpython.color.green,
                              make_trail=True,

@@ -18,7 +18,7 @@ name_to_object_dict = {
 latest_object_followed = config.NUCLEUS
 
 
-def enable_pan_mode(event: vpython.vpython.checkbox) -> None:
+def enable_pan_mode(event: vpython.vpython.button) -> None:
 
     if event.text == "Pan mode: disabled" or event.text == 'Enable Pan mode':
         config.CANVAS.camera.follow(None)
@@ -76,9 +76,11 @@ def setup_camera_pan_button() -> None:
                                        background=vpython.color.cyan,
                                        disabled=not config.PAUSED)
 
+
 def stop_simulation(event: vpython.vpython.button) -> None:
 
     config.SIMULATION_ENDED = True
+
 
 def screenshot(evt: vpython.vpython.button) -> None:
 

@@ -5,7 +5,8 @@ import numpy as np
 
 class Simulation(object):
 
-    def __init__(self, coordinate_data : np.ndarray, energy_data : np.ndarray) -> None:
+    def __init__(self, coordinate_data: np.ndarray,
+                 energy_data: np.ndarray) -> None:
 
         self.__coordinate_data = coordinate_data
         self.__energy_data = energy_data
@@ -39,7 +40,7 @@ class Simulation(object):
         return self.__time
 
     @time.setter
-    def time(self, value : int) -> None:
+    def time(self, value: int) -> None:
         self.__time = value
 
     @property
@@ -49,31 +50,30 @@ class Simulation(object):
 
 class SimulationObject:
 
-    def __init__(self, simulation : Simulation, offset : int) -> None:
+    def __init__(self, simulation: Simulation, offset: int) -> None:
 
         self._simulation = simulation
         self._offset = offset
 
     @property
     def x(self) -> float:
-        return self._simulation.data[self._simulation.time][0+self._offset]
+        return self._simulation.data[self._simulation.time][0 + self._offset]
 
     @property
     def y(self) -> float:
-        return self._simulation.data[self._simulation.time][1+self._offset]
+        return self._simulation.data[self._simulation.time][1 + self._offset]
 
     @property
     def z(self) -> float:
-        return self._simulation.data[self._simulation.time][2+self._offset]
+        return self._simulation.data[self._simulation.time][2 + self._offset]
 
 
 class ElectronObject(SimulationObject):
 
     @property
-    def energy_wrt_projectile(self):
+    def energy_wrt_projectile(self) -> float:
         return self._simulation.energy_data[self._simulation.time][0]
 
     @property
-    def energy_wrt_target(self):
+    def energy_wrt_target(self) -> float:
         return self._simulation.energy_data[self._simulation.time][1]
-
