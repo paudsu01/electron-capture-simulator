@@ -37,6 +37,11 @@ class Simulation(object):
     def time(self, value : int) -> None:
         self.__time = value
 
+    @property
+    def actual_time(self) -> None:
+        return self.data[self.time][9]
+
+
 class SimulationObject:
 
     def __init__(self, simulation : Simulation, offset : int) -> None:

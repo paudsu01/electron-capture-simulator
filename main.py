@@ -95,7 +95,7 @@ def end_simulation():
         pass
 
 
-def change_coordinates() -> None:
+def change_coordinates_and_update_time() -> None:
 
     config.PROJECTILE.pos = vpython.vector(SIM.projectile.x,
                                            SIM.projectile.y,
@@ -106,13 +106,13 @@ def change_coordinates() -> None:
     config.NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x,
                                         SIM.target_nucleus.y,
                                         SIM.target_nucleus.z)
-
+    vpython.scene.title = f'\t\tSimulation Time elapsed: <b>{SIM.actual_time:.4f}</b>'
  
 
 def start_simulation():
 
     # Setup the objects in canvas in their required coordinates
-    change_coordinates()
+    change_coordinates_and_update_time()
 
     while SIM.time < len(SIM.data):
 
@@ -120,7 +120,7 @@ def start_simulation():
 
         if not config.PAUSED:
 
-           change_coordinates()
+           change_coordinates_and_update_time()
            SIM.time += 1
 
     end_simulation()
