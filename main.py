@@ -57,7 +57,7 @@ def setup_user_input():
     config.CANVAS.append_to_caption("\t\t")
 
     # Enable graph checkbox
-    graph_checkbox = vpython.checkbox(text='Show graph',
+    graph_checkbox = vpython.checkbox(text='Plot graph',
                    bind=add_delete_curves,
                    background=vpython.color.orange)
 
@@ -182,6 +182,7 @@ if __name__ == '__main__':
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument('coordinatesfileName.dat')
     argument_parser.add_argument('energyfileName.dat')
+    argument_parser.add_argument('-f', '--fast', help='Use fast mode for graphing instead of the default slow mode (Also needs the -g (graph) flag provided)', action='store_true')
 
     args = argument_parser.parse_args()
 
@@ -206,6 +207,8 @@ if __name__ == '__main__':
 
             # Only load if no error with files
             import config
+            config.setup_graph_and_canvas(args.fast)
+
             import utils
 
             SIM = simulation_model.Simulation(coordinates_data, energy_data)
