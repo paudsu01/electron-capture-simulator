@@ -57,9 +57,10 @@ def setup_user_input():
     config.CANVAS.append_to_caption("\t\t")
 
     # Enable graph checkbox
-    graph_checkbox = vpython.checkbox(text='Plot graph',
-                   bind=add_delete_curves,
-                   background=vpython.color.orange)
+    if config.GRAPH_ENABLED:
+        graph_checkbox = vpython.checkbox(text='Plot graph',
+                    bind=add_delete_curves,
+                    background=vpython.color.orange)
 
     config.CANVAS.append_to_caption("\n\n")
 
@@ -110,11 +111,12 @@ def restart_simulation(event : vpython.vpython.button) -> None:
     # Set camers to latest object followed in case pan mode enabled
     config.CANVAS.camera.follow(utils.latest_object_followed)
 
-    # Remove points from graph
-    PROJECTILE_ENERGY_GRAPH.data = []
-    TARGET_ENERGY_GRAPH.data = []
+    if config.GRAPH_ENABLED:
 
-    graph_checkbox.disabled =  False
+        # Remove points from graph
+        PROJECTILE_ENERGY_GRAPH.data = []
+        TARGET_ENERGY_GRAPH.data = []
+        graph_checkbox.disabled =  False
 
 def end_simulation():
 
@@ -152,11 +154,13 @@ def start_simulation():
 
     # Setup the objects in canvas in their required coordinates
     change_coordinates_and_update_time()
-    if graph_checkbox.checked : plot_graph()
+
+    if config.GRAPH_ENABLED:
+        if graph_checkbox.checked : plot_graph()
 
     while SIM.time < len(SIM.data):
 
-        if config.SIMULATION_STARTED:
+        if config.SIMULATION_STARTED and config.GRAPH_ENABLED:
             graph_checkbox.disabled = True
 
         if config.SIMULATION_ENDED:
@@ -169,7 +173,7 @@ def start_simulation():
            config.SIMULATION_STARTED = True
 
            change_coordinates_and_update_time()
-           if int(SIM.time) % 100 == 0 and graph_checkbox.checked : plot_graph()
+           if config.GRAPH_ENABLED and int(SIM.time) % 100 == 0 and graph_checkbox.checked : plot_graph()
 
            SIM.time += 1
 
@@ -181,15 +185,21 @@ if __name__ == '__main__':
     pattern = re.compile(r'.*\.dat')
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument('coordinatesfileName.dat')
-    argument_parser.add_argument('energyfileName.dat')
-    argument_parser.add_argument('-f', '--fast', help='Use fast mode for graphing instead of the default slow mode (Also needs the -g (graph) flag provided)', action='store_true')
+
+    # Make the energyfileName.dat positional argument optional
+    # Only plot the graph is the argument is provided
+
+    argument_parser.add_argument('energyfileName.dat', nargs='?')
+
+    argument_parser.add_argument('-f', '--fast', help='Use fast mode for graphing instead of the default slow mode (Also needs the energyfileName.dat positional argument provided)', action='store_true')
 
     args = argument_parser.parse_args()
+    COORDINATES_FILE_NAME = vars(args)['coordinatesfileName.dat']
+    ENERGY_FILE_NAME = vars(args)['energyfileName.dat']
 
-    if pattern.match(vars(args)['coordinatesfileName.dat']) and pattern.match(vars(args)['energyfileName.dat']):
+    if (pattern.match(COORDINATES_FILE_NAME) and ENERGY_FILE_NAME is None) or (pattern.match(COORDINATES_FILE_NAME) and pattern.match(ENERGY_FILE_NAME)):
 
-        COORDINATES_FILE_NAME = vars(args)['coordinatesfileName.dat']
-        ENERGY_FILE_NAME = vars(args)['energyfileName.dat']
+        enable_graph = False if ENERGY_FILE_NAME is None else True
 
 
         # Load data from .dat file
@@ -197,23 +207,30 @@ if __name__ == '__main__':
             coordinates_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
                 COORDINATES_FILE_NAME, dtype=float, usecols=(i for i in range(0, 10)))
 
-            energy_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
-                ENERGY_FILE_NAME, dtype=float, usecols=(i for i in range(0, 2)))
+            if enable_graph:
 
-            if len(coordinates_data) != len(energy_data):
-                raise DATFilesHaveVaryingLengths(f'Both {COORDINATES_FILE_NAME} and {ENERGY_FILE_NAME} need to have the same number of lines')
+                energy_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
+                    ENERGY_FILE_NAME, dtype=float, usecols=(i for i in range(0, 2)))
+
+                if len(coordinates_data) != len(energy_data):
+                    raise DATFilesHaveVaryingLengths(f'Both {COORDINATES_FILE_NAME} and {ENERGY_FILE_NAME} need to have the same number of lines')
+            else:
+                energy_data = numpy.array([])
 
             ### Init ###
 
             # Only load if no error with files
             import config
-            config.setup_graph_and_canvas(args.fast)
+            config.setup_graph_and_canvas(args.fast, enable_graph)
+            config.GRAPH_ENABLED = enable_graph
 
             import utils
 
             SIM = simulation_model.Simulation(coordinates_data, energy_data)
-            PROJECTILE_ENERGY_GRAPH = vpython.gdots(color=vpython.color.red, radius=1.5, graph=config.GRAPH)
-            TARGET_ENERGY_GRAPH = vpython.gdots(color=vpython.color.blue, radius=1.5, graph=config.GRAPH)
+
+            if config.GRAPH_ENABLED:
+                PROJECTILE_ENERGY_GRAPH = vpython.gdots(color=vpython.color.red, radius=1.5, graph=config.GRAPH)
+                TARGET_ENERGY_GRAPH = vpython.gdots(color=vpython.color.blue, radius=1.5, graph=config.GRAPH)
 
             # Setup user input and options
             setup_user_input()
