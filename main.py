@@ -10,6 +10,7 @@ import vpython
 import simulation_model
 from exceptions import (DATFileNotProvidedException,
                         UnableToConvertDATFileToArray,
+                        CannotEnableFastGraphModeWithoutEnergyDATFile,
                         DATFilesHaveVaryingLengths)
 
 def add_delete_curves(event: vpython.vpython.checkbox):
@@ -194,8 +195,12 @@ if __name__ == '__main__':
     argument_parser.add_argument('-f', '--fast', help='Use fast mode for graphing instead of the default slow mode (Also needs the energyfileName.dat positional argument provided)', action='store_true')
 
     args = argument_parser.parse_args()
+
     COORDINATES_FILE_NAME = vars(args)['coordinatesfileName.dat']
     ENERGY_FILE_NAME = vars(args)['energyfileName.dat']
+    
+    if ENERGY_FILE_NAME is None and args.fast:
+        raise CannotEnableFastGraphModeWithoutEnergyDATFile("Cannot provide -f flag without providing energyfileName.dat as positional argument")
 
     if (pattern.match(COORDINATES_FILE_NAME) and ENERGY_FILE_NAME is None) or (pattern.match(COORDINATES_FILE_NAME) and pattern.match(ENERGY_FILE_NAME)):
 

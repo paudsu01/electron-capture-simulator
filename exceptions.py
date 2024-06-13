@@ -7,3 +7,6 @@ class UnableToConvertDATFileToArray(Exception):
 class DATFilesHaveVaryingLengths(Exception):
     pass
 
+class CannotEnableFastGraphModeWithoutEnergyDATFile(Exception):
+    pass
+
