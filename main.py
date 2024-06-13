@@ -12,12 +12,20 @@ from exceptions import (DATFileNotProvidedException,
                         UnableToConvertDATFileToArray,
                         DATFilesHaveVaryingLengths)
 
+def add_delete_curves(event: vpython.vpython.checkbox):
+
+    if event.checked:
+        plot_graph()
+    else:
+        PROJECTILE_ENERGY_GRAPH.data = []
+        TARGET_ENERGY_GRAPH.data = []
 
 def setup_user_input():
 
     global pause_button
     global speed_slider
     global stop_button
+    global graph_checkbox
 
     # Run/Pause button
     pause_button = vpython.button(bind=utils.run_pause_program,
@@ -46,6 +54,13 @@ def setup_user_input():
     stop_button = vpython.button(text='Stop simulation',
                    bind=utils.stop_simulation,
                    background=vpython.color.red)
+    config.CANVAS.append_to_caption("\t\t")
+
+    # Enable graph checkbox
+    graph_checkbox = vpython.checkbox(text='Show graph',
+                   bind=add_delete_curves,
+                   background=vpython.color.orange)
+
     config.CANVAS.append_to_caption("\n\n")
 
     # Speed slider
@@ -70,6 +85,7 @@ def restart_simulation(event : vpython.vpython.button) -> None:
 
     # Allow the start_simulation function to be executed
     config.SIMULATION_ENDED = False
+    config.SIMULATION_STARTED = False
 
     # Delete restart button
     event.delete()
@@ -94,6 +110,11 @@ def restart_simulation(event : vpython.vpython.button) -> None:
     # Set camers to latest object followed in case pan mode enabled
     config.CANVAS.camera.follow(utils.latest_object_followed)
 
+    # Remove points from graph
+    PROJECTILE_ENERGY_GRAPH.data = []
+    TARGET_ENERGY_GRAPH.data = []
+
+    graph_checkbox.disabled =  False
 
 def end_simulation():
 
@@ -107,6 +128,11 @@ def end_simulation():
 
     vpython.button(bind=restart_simulation, text='Restart simulation', background=vpython.color.magenta, pos=config.CANVAS.title_anchor)
     config.CANVAS.append_to_title('\n\n')
+
+def plot_graph():
+
+    PROJECTILE_ENERGY_GRAPH.plot(SIM.actual_time, SIM.electron.energy_wrt_projectile)
+    TARGET_ENERGY_GRAPH.plot(SIM.actual_time, SIM.electron.energy_wrt_target)
 
 def change_coordinates_and_update_time() -> None:
 
@@ -126,8 +152,12 @@ def start_simulation():
 
     # Setup the objects in canvas in their required coordinates
     change_coordinates_and_update_time()
+    if graph_checkbox.checked : plot_graph()
 
     while SIM.time < len(SIM.data):
+
+        if config.SIMULATION_STARTED:
+            graph_checkbox.disabled = True
 
         if config.SIMULATION_ENDED:
             break
@@ -136,7 +166,11 @@ def start_simulation():
 
         if not config.PAUSED:
 
+           config.SIMULATION_STARTED = True
+
            change_coordinates_and_update_time()
+           if int(SIM.time) % 100 == 0 and graph_checkbox.checked : plot_graph()
+
            SIM.time += 1
 
     end_simulation()
@@ -175,6 +209,8 @@ if __name__ == '__main__':
             import utils
 
             SIM = simulation_model.Simulation(coordinates_data, energy_data)
+            PROJECTILE_ENERGY_GRAPH = vpython.gdots(color=vpython.color.red, radius=1.5, graph=config.GRAPH)
+            TARGET_ENERGY_GRAPH = vpython.gdots(color=vpython.color.blue, radius=1.5, graph=config.GRAPH)
 
             # Setup user input and options
             setup_user_input()

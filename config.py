@@ -3,8 +3,9 @@ import vpython
 PAUSED = True
 SIM_RATE = 30
 SIMULATION_ENDED = False
+SIMULATION_STARTED = False
 
-GRAPH = vpython.graph(title='Electron Energy graph', xtitle='Time', ytitle='Energy', fast=False, align='right', width=500)
+GRAPH = vpython.graph(title='Electron Energy graph', xtitle='Time', ytitle='Energy', align='right', width=500, fast=False)
 
 # Create a gvbars object to align GRAPH on top right
 bar = vpython.gvbars()
