@@ -148,7 +148,8 @@ def change_coordinates_and_update_time() -> None:
     config.NUCLEUS.pos = vpython.vector(SIM.target_nucleus.x,
                                         SIM.target_nucleus.y,
                                         SIM.target_nucleus.z)
-    config.CANVAS.title = f'\t\tSimulation Time elapsed: <b>{SIM.actual_time:.4f}</b>'
+    time_in_fs = 0.024188843 * SIM.actual_time
+    config.CANVAS.title = f'\t\tSimulation Time elapsed: <b>{time_in_fs:.4f}</b> femtoseconds(fs)'
  
 
 def start_simulation():

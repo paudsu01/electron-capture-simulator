@@ -24,12 +24,12 @@ def setup_graph_and_canvas(fastGraph, enable_graph):
     CANVAS = vpython.canvas(visible=True)
     CANVAS.select()
     
-    PROJECTILE = vpython.sphere(radius=1.5, color=vpython.color.red, make_trail=True)
-    NUCLEUS = vpython.sphere(radius=1.5,
+    PROJECTILE = vpython.sphere(radius=0.5, color=vpython.color.red, make_trail=True, opacity=0.5)
+    NUCLEUS = vpython.sphere(radius=0.5,
                              color=vpython.color.green,
                              make_trail=True,
                              opacity=0.5)
-    ELECTRON = vpython.sphere(radius=1,
+    ELECTRON = vpython.sphere(radius=0.15,
                               color=vpython.color.yellow,
                               make_trail=True)
     if enable_graph:
