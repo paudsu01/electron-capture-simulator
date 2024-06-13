@@ -2,6 +2,7 @@ import vpython
 
 PAUSED = True
 SIM_RATE = 30
+SIMULATION_ENDED = False
 
 PROJECTILE = vpython.sphere(radius=1.5, color=vpython.color.red, make_trail=True)
 NUCLEUS = vpython.sphere(radius=1.5,

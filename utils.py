@@ -76,6 +76,9 @@ def setup_camera_pan_button() -> None:
                                        background=vpython.color.cyan,
                                        disabled=not config.PAUSED)
 
+def stop_simulation(event: vpython.vpython.button) -> None:
+
+    config.SIMULATION_ENDED = True
 
 def screenshot(evt: vpython.vpython.button) -> None:
 

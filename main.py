@@ -18,6 +18,8 @@ def setup_user_input():
 
     global pause_button
     global speed_slider
+    global stop_button
+
     # Run/Pause button
     pause_button = vpython.button(bind=utils.run_pause_program,
                                   text='Run',
@@ -33,13 +35,19 @@ def setup_user_input():
 
     # Pan mode enable button
     utils.setup_camera_pan_button()
-    vpython.scene.append_to_caption("\t\t")
+    vpython.scene.append_to_caption("\n\n")
 
     # Screenshot button
     vpython.button(text='Screenshot',
                    bind=utils.screenshot,
                    background=vpython.color.blue)
-    vpython.scene.append_to_caption("\n")
+    vpython.scene.append_to_caption("\t\t")
+
+    # Stop button
+    stop_button = vpython.button(text='Stop simulation',
+                   bind=utils.stop_simulation,
+                   background=vpython.color.red)
+    vpython.scene.append_to_caption("\n\n")
 
     # Speed slider
     vpython.scene.append_to_caption("Change the simulation speed:")
@@ -61,6 +69,9 @@ def setup_user_input():
 
 def restart_simulation(event : vpython.vpython.button) -> None:
 
+    # Allow the start_simulation function to be executed
+    config.SIMULATION_ENDED = False
+
     # Delete restart button
     event.delete()
 
@@ -70,6 +81,7 @@ def restart_simulation(event : vpython.vpython.button) -> None:
     # Enable buttons and slider
     speed_slider.disabled = False
     pause_button.disabled = False
+    stop_button.disabled = False
 
     # Pause the simulation at the beginning
     config.PAUSED = False
@@ -80,20 +92,22 @@ def restart_simulation(event : vpython.vpython.button) -> None:
     config.NUCLEUS.clear_trail()
     config.ELECTRON.clear_trail()
 
-    start_simulation()
+    # Set camers to latest object followed in case pan mode enabled
+    vpython.scene.camera.follow(utils.latest_object_followed)
+
 
 def end_simulation():
 
     speed_slider.disabled = True
+    stop_button.disabled = True
+    config.SIMULATION_ENDED = True
+
+    config.PAUSED = False
     utils.run_pause_program(pause_button)
     pause_button.disabled = True
+
     vpython.button(bind=restart_simulation, text='Restart simulation', background=vpython.color.magenta, pos=vpython.scene.title_anchor)
     vpython.scene.append_to_title('\n\n')
-
-    while True:
-        vpython.rate(10)
-        pass
-
 
 def change_coordinates_and_update_time() -> None:
 
@@ -115,6 +129,9 @@ def start_simulation():
     change_coordinates_and_update_time()
 
     while SIM.time < len(SIM.data):
+
+        if config.SIMULATION_ENDED:
+            break
 
         vpython.rate(config.SIM_RATE)
 
@@ -149,7 +166,12 @@ if __name__ == '__main__':
             setup_user_input()
             vpython.scene.camera.follow(config.NUCLEUS)
 
-            start_simulation()
+            # Main while loop
+            while True:
+
+                vpython.rate(config.SIM_RATE)
+                if not config.SIMULATION_ENDED:
+                    start_simulation()
 
         except Exception as exception:
             raise UnableToConvertDATFileToArray(
