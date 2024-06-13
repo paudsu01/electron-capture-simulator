@@ -4,3 +4,6 @@ class DATFileNotProvidedException(Exception):
 class UnableToConvertDATFileToArray(Exception):
     pass
 
+class DATFilesHaveVaryingLengths(Exception):
+    pass
+

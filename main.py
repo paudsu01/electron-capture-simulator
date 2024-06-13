@@ -7,11 +7,10 @@ import re
 import numpy
 import vpython
 
-import config
 import simulation_model
-import utils
 from exceptions import (DATFileNotProvidedException,
-                        UnableToConvertDATFileToArray)
+                        UnableToConvertDATFileToArray,
+                        DATFilesHaveVaryingLengths)
 
 
 def setup_user_input():
@@ -147,20 +146,35 @@ if __name__ == '__main__':
 
     pattern = re.compile(r'.*\.dat')
     argument_parser = argparse.ArgumentParser()
-    argument_parser.add_argument('fileName.dat')
+    argument_parser.add_argument('coordinatesfileName.dat')
+    argument_parser.add_argument('energyfileName.dat')
+
     args = argument_parser.parse_args()
 
-    if pattern.match(vars(args)['fileName.dat']):
-        FILENAME = vars(args)['fileName.dat']
+    if pattern.match(vars(args)['coordinatesfileName.dat']) and pattern.match(vars(args)['energyfileName.dat']):
+
+        COORDINATES_FILE_NAME = vars(args)['coordinatesfileName.dat']
+        ENERGY_FILE_NAME = vars(args)['energyfileName.dat']
+
 
         # Load data from .dat file
         try:
-            data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
-                FILENAME, dtype=float, usecols=(i for i in range(0, 10)))
+            coordinates_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
+                COORDINATES_FILE_NAME, dtype=float, usecols=(i for i in range(0, 10)))
+
+            energy_data: numpy.ndarray[numpy.ndarray] = numpy.loadtxt(
+                ENERGY_FILE_NAME, dtype=float, usecols=(i for i in range(0, 2)))
+
+            if len(coordinates_data) != len(energy_data):
+                raise DATFilesHaveVaryingLengths(f'Both {COORDINATES_FILE_NAME} and {ENERGY_FILE_NAME} need to have the same number of lines')
 
             ### Init ###
 
-            SIM = simulation_model.Simulation(data)
+            # Only load if no error with files
+            import config
+            import utils
+
+            SIM = simulation_model.Simulation(coordinates_data, energy_data)
 
             # Setup user input and options
             setup_user_input()
@@ -179,5 +193,5 @@ if __name__ == '__main__':
 
     else:
         raise DATFileNotProvidedException(
-            f".dat file required.\nUsage: python {os.path.relpath(__file__)} fileName.dat"
+            f".dat file required.\nUsage: python {os.path.relpath(__file__)} coordinatesfileName.dat energyfileName.dat"
         )
