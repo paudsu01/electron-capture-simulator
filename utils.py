@@ -21,10 +21,10 @@ latest_object_followed = config.NUCLEUS
 def enable_pan_mode(event: vpython.vpython.checkbox) -> None:
 
     if event.text == "Pan mode: disabled" or event.text == 'Enable Pan mode':
-        vpython.scene.camera.follow(None)
+        config.CANVAS.camera.follow(None)
         camera_pan_button.text = "Pan mode: enabled"
     else:
-        vpython.scene.camera.follow(latest_object_followed)
+        config.CANVAS.camera.follow(latest_object_followed)
         camera_pan_button.text = "Pan mode: disabled"
 
 
@@ -33,7 +33,7 @@ def change_camera_focus(event: vpython.vpython.menu) -> None:
     global latest_object_followed
     latest_object_followed = name_to_object_dict[event.selected]
 
-    vpython.scene.camera.follow(latest_object_followed)
+    config.CANVAS.camera.follow(latest_object_followed)
     camera_pan_button.text = "Enable Pan mode"
 
 
@@ -48,7 +48,7 @@ def run_pause_program(event: vpython.vpython.button) -> None:
     else:
         camera_pan_button.disabled = True
         camera_pan_button.text = "Enable Pan mode"
-        vpython.scene.camera.follow(latest_object_followed)
+        config.CANVAS.camera.follow(latest_object_followed)
 
 
 def change_simulation_rate(event: vpython.vpython.slider) -> None:
@@ -82,7 +82,7 @@ def stop_simulation(event: vpython.vpython.button) -> None:
 
 def screenshot(evt: vpython.vpython.button) -> None:
 
-    vpython.scene.capture(random_text_generator())
+    config.CANVAS.capture(random_text_generator())
 
 
 def random_text_generator() -> str:
