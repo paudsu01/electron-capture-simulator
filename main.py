@@ -183,7 +183,7 @@ def start_simulation() -> None:
 
             change_coordinates_and_update_time()
             if config.GRAPH_ENABLED and int(
-                    SIM.time) % 100 == 0 and graph_checkbox.checked:
+                    SIM.time) % 25 == 0 and graph_checkbox.checked:
                 plot_graph()
 
             SIM.time += 1
@@ -258,11 +258,19 @@ if __name__ == '__main__':
             SIM = simulation_model.Simulation(coordinates_data, energy_data)
 
             if config.GRAPH_ENABLED:
-                PROJECTILE_ENERGY_GRAPH = vpython.gdots(
-                    color=vpython.color.red, radius=1.5, graph=config.GRAPH)
-                TARGET_ENERGY_GRAPH = vpython.gdots(color=vpython.color.blue,
+                PROJECTILE_ENERGY_GRAPH = vpython.gcurve(
+                    color=vpython.color.red,
+                    radius=1.5,
+                    graph=config.GRAPH,
+                    label='wrt projectile',
+                    marker_color=vpython.color.black,
+                    markers=True)
+                TARGET_ENERGY_GRAPH = vpython.gcurve(color=vpython.color.blue,
                                                     radius=1.5,
-                                                    graph=config.GRAPH)
+                                                    graph=config.GRAPH,
+                                                    label='wrt nucleus',
+                                                    marker_color=vpython.color.magenta,
+                                                    markers=True)
 
             # Setup user input and options
             setup_user_input()

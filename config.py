@@ -18,8 +18,8 @@ def setup_graph_and_canvas(fastGraph: bool, enable_graph: bool) -> None:
     global ELECTRON
 
     if enable_graph:
-        GRAPH = vpython.graph(title='Electron Energy graph',
-                              xtitle='Time',
+        GRAPH = vpython.graph(title="Electron's Binding Energy",
+                              xtitle='Time in atomic second(s)',
                               ytitle='Energy',
                               align='right',
                               width=500,
