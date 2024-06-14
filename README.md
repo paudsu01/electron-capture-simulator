@@ -36,6 +36,27 @@ pip install -r requirements.txt
 ```
 * You are done with installation.
 
+## Note to people who setup Virtual Environment 
+If you installed with `Method 2`, you will need to remember to activate your virutal env before running the program and deactivating once you are done.
+1. To activate, first open up your terminal and navigate inside the project folder.
+2. If you are a MAC/linux user type:
+```bash
+source .venv/bin/activate
+```
+in your terminal to activate the virtual env.
+
+3. If you are a windows user type:
+```bat
+.venv\Scripts\activate.bat
+```
+in your terminal to activate the virtual env.
+
+4. Type
+```bat
+deactivate
+```
+to deactivate the virtual environment for windows/Mac/Linux.
+
 ## What files are required to run the program?
 
 1. <i><b>Coordinates `.dat` file </b></i> : Before running the program, you will need a `.dat` file with coordinate information for the projectile, electron and the target nucleus along with the time information. The `.dat` file should have 10 columns of information in the order mentioned below:
@@ -43,11 +64,12 @@ pip install -r requirements.txt
 | Projectile x | Projectile y | Projectile z | TargetNucleus x | TargetNucleus y | TargetNucleus z | Electron x | Electron y | Electron z | Atomic Time
 |-|-|-|-|-|-|-|-|-|-|
 
-2. Consult `sample/coordinateSample.dat` as an example of a coordinate `.dat` file.
+2. Consult `sample/coordinatesSample.dat` as an example of a coordinate `.dat` file.
    <hr></hr>
 3. <i><b>Energy `.dat` file </b></i> If you wish to plot a graph while the simulation runs, you will also need Energy `.dat`  file with 2 columns of data.
-4. The first column should contain `Electron's energy w.r.t Projectile` and the second column should contain `Electron's energy w.r.t Nucleus`
-5. Consult `sample/energySample.dat` as an example of an energy `.dat` file.
+5. The first column should contain `Electron's energy w.r.t Projectile` and the second column should contain `Electron's energy w.r.t Nucleus`
+6. The graph will have the energy data in the y-axis against simulation time in the x-axis.
+7. Consult `sample/energySample.dat` as an example of an energy `.dat` file.
 
 ## How to run the program ?
 
