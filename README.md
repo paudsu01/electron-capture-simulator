@@ -3,6 +3,15 @@
 ## Introduction
 This small project was done as part of Luther College's physics research under Prof. James Perez. The main research involves studying single electron capture by bare ions from a target nucleus. This project was done to help visualise this electron capture process. The visualization is done with the help of the `VPython` module.
 
+## Demonstration
+
+
+https://github.com/paudsu01/electron-capture-simulator/assets/114323952/bb0c3498-9902-4ca6-b6e6-813d48f0b0ff
+
+
+
+
+
 ## Installation guide
 1. Install python on your computer/workstation if you haven't already.
 2. Go to the main page of this repository. To the right of the list of files, click Releases.
