@@ -1,7 +1,7 @@
 # Electron Capture Visual Simulator
 
 ## Introduction
-This small project was done as part of Luther College's physics research under Prof. James Perez. The main research involves studying single electron capture by bare ions from a target nucleus. This project was done to help visualise this electron capture process.
+This small project was done as part of Luther College's physics research under Prof. James Perez. The main research involves studying single electron capture by bare ions from a target nucleus. This project was done to help visualise this electron capture process. The visualization is done with the help of the `VPython` module.
 
 ## Installation guide
 1. Install python on your computer/workstation if you haven't already.
@@ -36,14 +36,43 @@ pip install -r requirements.txt
 ```
 * You are done with installation.
 
-## How to run?
+## What files are required to run the program?
 
-## Run the program with a sample file
+1. <i><b>Coordinates `.dat` file </b></i> : Before running the program, you will need a `.dat` file with coordinate information for the projectile, electron and the target nucleus along with the time information. The `.dat` file should have 10 columns of information in the order mentioned below:
+   
+| Projectile x | Projectile y | Projectile z | TargetNucleus x | TargetNucleus y | TargetNucleus z | Electron x | Electron y | Electron z | Atomic Time
+|-|-|-|-|-|-|-|-|-|-|
+
+2. Consult `sample/coordinateSample.dat` as an example of a coordinate `.dat` file.
+   <hr></hr>
+3. <i><b>Energy `.dat` file </b></i> If you wish to plot a graph while the simulation runs, you will also need Energy `.dat`  file with 2 columns of data.
+4. The first column should contain `Electron's energy w.r.t Projectile` and the second column should contain `Electron's energy w.r.t Nucleus`
+5. Consult `sample/energySample.dat` as an example of an energy `.dat` file.
+
+## How to run the program ?
+
+Inside the `sample` folder, there are two files : `coordinatesSample.dat` and `energySample.dat`. You can try using these files to get started with running the program. Open up a terminal, navigate to the root folder of this project, activate your virtual environment if you setup a virtual environment at the time of installation and type the following:
+
+* To run the program in no-graph mode : 
+
+```bash
+python3 main.py sample/coordinatesSample.dat
+```
+
+* To run the program in interactive graph mode :
+  
+```bash
+python3 main.py sample/coordinatesSample.dat sample/energySample.dat
+```
+
+* To run the program in non interactive fast graph mode :
+  
+```bash
+python3 main.py sample/coordinatesSample.dat sample/energySample.dat -f
+```
 
 ## Why open source ?
 
 This project is specifically tailored for Prof Perez's research and will probably not serve use to anyone outside his research group.
 The reason this is open-source is so that other students working with Prof Perez can access this repository and use the documentation and other resources to get started with running the program.
-
-## Contributing
 
