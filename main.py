@@ -106,11 +106,6 @@ def restart_simulation(event: vpython.vpython.button) -> None:
     config.PAUSED = False
     utils.run_pause_program(pause_button)
 
-    # Remove trails created from previous sim run
-    config.PROJECTILE.clear_trail()
-    config.NUCLEUS.clear_trail()
-    config.ELECTRON.clear_trail()
-
     # Set camers to latest object followed in case pan mode enabled
     config.CANVAS.camera.follow(utils.latest_object_followed)
 
@@ -163,6 +158,11 @@ def start_simulation() -> None:
 
     # Setup the objects in canvas in their required coordinates
     change_coordinates_and_update_time()
+
+    # Remove trails created from previous sim run
+    config.PROJECTILE.clear_trail()
+    config.NUCLEUS.clear_trail()
+    config.ELECTRON.clear_trail()
 
     if config.GRAPH_ENABLED:
         if graph_checkbox.checked: plot_graph()
